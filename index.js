@@ -1,11 +1,12 @@
 // module.exports = () => {
 //   // ...
 // };
+const fs = require('fs');
 
-var file = require("file-system");
+/* var file = require("file-system");
 var fs = require("fs");
 
-file.readFile === fs.readFile;
+file.readFile === fs.readFile; */
 
 // Reading file and check if file includes links - https
 // const strHttps = "https"
