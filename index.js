@@ -5,55 +5,54 @@ const fs = require("fs");
 const { readFileSync } = require("fs");
 const markdownLinkExtractor = require("markdown-link-extractor");
 const path = require("path");
+const axios = require('axios').default;
+
+
 
 // Extracting links from markdown file
-const readingFile = () => {
+const readingFile = (filename) => {
   try {
-    const markdown = readFileSync("README.md", { encoding: "utf8" });
+    const markdown = readFileSync(filename, { encoding: "utf8" });
     const links = markdownLinkExtractor(markdown);
     const linksArr = [];
 
     links.forEach((link) => linksArr.push(link));
-    console.log(linksArr);
+    // console.log(linksArr);
+    return linksArr;
 
   } catch (err) {
     console.error(err);
   }
 };
-readingFile();
+readingFile("demo1.md");
 
+// Http Request - Checking Link Status
+const httpReq = (url) => {
+  axios.get(url)
+  .then((response) => {
+    // handle success
+    console.log(`File status: ${response.status} | Status Message: ${response.statusText}`);
+  })
+  .catch((error) => {
+    // console.log("hola")
+    if (error.response) {
+      // handle error
+      console.log(`File status: ${error.response.status} | Status Message: ${error.response.statusText}`);
+    }
+  });
+};
+httpReq("https://bobbyhadz.com/blog/node-js-check-if-file-contains-string");
 
 // Getting the extension of a file
 const ext = path.extname("README.md");
-console.log(ext, "soy la extensión del archivo");
+//console.log(ext, "soy la extensión del archivo");
 
-
-
-/* var file = require("file-system");
-var fs = require("fs");
-
-file.readFile === fs.readFile; */
-
-// Reading file and check if file includes links - https
-// const strHttps = "https"
-
-/* fs.readFile("demo1.md", "utf8", (err, data) => {
-  if (err) {
-    console.error(err);
-    return;
-  }
-
-  const separateStr = data.split(/\r?\n/);
-  const linksArr = [];
-
-  const lines = separateStr.forEach((line) => {
-    const conditions = /https|http/.test(line);
-    
-    if (conditions) {
-      linksArr.push(line);
-    } 
+// init function
+const init = (filename) => {
+  const files = readingFile(filename);
+  
+  files.forEach((link) => {
+    console.log(link);
   });
-
-  console.log(linksArr);
-  return linksArr;
-}); */
+};
+init("demo1.md");
