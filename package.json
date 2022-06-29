@@ -5,6 +5,7 @@
     "node": ">=14.x"
   },
   "dependencies": {
-    "file-system": "^2.2.2"
+    "file-system": "^2.2.2",
+    "markdown-link-extractor": "^4.0.1"
   }
 }
