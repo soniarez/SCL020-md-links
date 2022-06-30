@@ -10,10 +10,11 @@ const axios = require("axios").default;
 // Extracting links from file
 const readingFile = (filename) => {
   try {
-    const markdown = readFileSync(filename, { encoding: "utf8" });
+    const markdown = readFileSync(filename).toString();
     const links = markdownLinkExtractor(markdown);
+    //console.log(links[0].text, "links en readingfile");
     const linksArr = [];
-    //console.log(links);
+    //console.log(links, "links en readingFile func");
     links.forEach((link) => linksArr.push(link));
     //console.log(linksArr);
     return linksArr;
@@ -28,9 +29,12 @@ const httpReq = (filename) => {
   const files = readingFile(filename);
   const fetchingLinks = [];
 
-  files.forEach((url) => {
+  files.map((url) => {
+    //const  text  = url.text;
+    //console.log(text)
     axios.get(url)
       .then((response) => {
+        //console.log(response.data);
         const successLinks = {
           link: url,
           status: response.status,
@@ -60,7 +64,7 @@ const httpReq = (filename) => {
   });
 };
 httpReq("demo1.md");
-
+ 
 // Getting md files from a directory
 const readingDir = (__dirname) => {
   files = fs.readdirSync(__dirname);
@@ -70,4 +74,4 @@ const readingDir = (__dirname) => {
     if (path.extname(file) == ".md") console.log(file);
   });
 };
-readingDir("C:/Users/carolina.briones/Desktop/COPY-SCL020-memory-match");
+readingDir("C:/Users/carolina.briones/Desktop/COPY-SCL020-memory-match"); 
