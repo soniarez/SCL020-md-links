@@ -5,11 +5,9 @@ const fs = require("fs");
 const { readFileSync } = require("fs");
 const markdownLinkExtractor = require("markdown-link-extractor");
 const path = require("path");
-const axios = require('axios').default;
+const axios = require("axios").default;
 
-
-
-// Extracting links from markdown file
+// Extracting links from file
 const readingFile = (filename) => {
   try {
     const markdown = readFileSync(filename, { encoding: "utf8" });
@@ -17,9 +15,8 @@ const readingFile = (filename) => {
     const linksArr = [];
 
     links.forEach((link) => linksArr.push(link));
-    // console.log(linksArr);
+    //console.log(linksArr);
     return linksArr;
-
   } catch (err) {
     console.error(err);
   }
@@ -27,32 +24,45 @@ const readingFile = (filename) => {
 readingFile("demo1.md");
 
 // Http Request - Checking Link Status
-const httpReq = (url) => {
-  axios.get(url)
-  .then((response) => {
-    // handle success
-    console.log(`File status: ${response.status} | Status Message: ${response.statusText}`);
-  })
-  .catch((error) => {
-    // console.log("hola")
-    if (error.response) {
-      // handle error
-      console.log(`File status: ${error.response.status} | Status Message: ${error.response.statusText}`);
-    }
+const httpReq = (filename) => {
+  const files = readingFile(filename);
+  const fetchingLinks = [];
+
+  const linkStatus = files.map((url) => {
+    //console.log(url);
+    return new Promise((resolve, reject) => {
+      const ax = axios.get(url)
+        .then((response) => {
+          const successLinks = {
+            link: url,
+            status: response.status,
+            statusText: response.statusText,
+          };
+          console.log(successLinks);
+          fetchingLinks.push(successLinks);
+          return successLinks;
+        })
+        .catch((error) => {
+          if (error.response) {
+            const failLinks = {
+              link: url,
+              status: error.response.status,
+              statusText: error.response.statusText,
+            };
+            console.log(failLinks);
+            fetchingLinks.push(failLinks);
+            return failLinks;
+          }
+        });
+        resolve(ax);
+        reject((error) => console.log("fallo promesa"), error);
+    });
   });
+  Promise.all(linkStatus);
+   return fetchingLinks;
 };
-httpReq("https://bobbyhadz.com/blog/node-js-check-if-file-contains-string");
+console.log(httpReq("demo1.md"));
 
 // Getting the extension of a file
 const ext = path.extname("README.md");
 //console.log(ext, "soy la extensión del archivo");
-
-// init function
-const init = (filename) => {
-  const files = readingFile(filename);
-  
-  files.forEach((link) => {
-    console.log(link);
-  });
-};
-init("demo1.md");
