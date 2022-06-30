@@ -3,7 +3,7 @@
 // };
 const fs = require("fs");
 const { readFileSync } = require("fs");
-const markdownLinkExtractor = require("markdown-link-extractor");
+const markdownLinkExtractor = require('markdown-link-extractor');
 const path = require("path");
 const axios = require("axios").default;
 
@@ -63,6 +63,15 @@ const httpReq = (filename) => {
 };
 console.log(httpReq("demo1.md"));
 
-// Getting the extension of a file
-const ext = path.extname("README.md");
-//console.log(ext, "soy la extensión del archivo");
+// Reading a directory
+const readingDir = (__dirname) => {
+  files = fs.readdirSync(__dirname);
+  console.log("/Filenames with the .md extension:");
+
+  files.forEach(file => {
+    if (path.extname(file) == ".md")
+      console.log(file);
+  })
+}
+readingDir("C:/Users/carolina.briones/Desktop/COPY-SCL020-memory-match");
+
