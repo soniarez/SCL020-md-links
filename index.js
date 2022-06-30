@@ -55,7 +55,7 @@ const httpReq = (filename) => {
           }
         });
         resolve(ax);
-        reject((error) => console.log("fallo promesa"), error);
+        reject((error) => console.log("promise failed"), error);
     });
   });
   Promise.all(linkStatus);
@@ -63,7 +63,7 @@ const httpReq = (filename) => {
 };
 console.log(httpReq("demo1.md"));
 
-// Reading a directory
+// Getting md files from a directory
 const readingDir = (__dirname) => {
   files = fs.readdirSync(__dirname);
   console.log("/Filenames with the .md extension:");
