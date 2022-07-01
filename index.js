@@ -3,44 +3,56 @@
 // };
 const fs = require("fs");
 const { readFileSync } = require("fs");
-const markdownLinkExtractor = require("markdown-link-extractor");
+const marked = require("marked");
+const cheerio = require('cheerio');
 const path = require("path");
 const axios = require("axios").default;
 
-// Extracting links from file
-const readingFile = (filename) => {
+
+// Extracting Links
+const extractLinks = (filename) => {
   try {
-    const markdown = readFileSync(filename).toString();
-    const links = markdownLinkExtractor(markdown);
-    //console.log(links[0].text, "links en readingfile");
+    const data = fs.readFileSync(filename, "utf8");
+    const dataHtml = marked.parse(data); // using marked to transform md to html
+    const $ = cheerio.load(dataHtml); // using cheerio to extract <a> tags
+    const linksObjects = $('a');  // this is a mass object, not an array
+    //console.log(linksObjects);
+
     const linksArr = [];
-    //console.log(links, "links en readingFile func");
-    links.forEach((link) => linksArr.push(link));
-    //console.log(linksArr);
+    linksObjects.each((index, link) => {
+      linksArr.push({
+      text: $(link).text(),
+      href: $(link).attr('href')
+      })  
+    });
+    //console.log(linksArr, "linksArr in extractLink func");
     return linksArr;
   } catch (err) {
     console.error(err);
   }
 };
-readingFile("demo1.md");
+extractLinks("demo1.md");
+
 
 // Http Request - Checking Link Status
-const httpReq = (filename) => {
-  const files = readingFile(filename);
-  const fetchingLinks = [];
+ const validateStatus = (filename) => {
+  const files = extractLinks(filename);
+  //console.log(files, "files in validateStatus");
 
-  files.map((url) => {
-    //const  text  = url.text;
-    //console.log(text)
-    axios.get(url)
+  const fetchingLinks = []; 
+
+  files.forEach((urlObj) => {
+    const url = urlObj.href;
+    const linkText = urlObj.text;
+    axios
+      .get(url)
       .then((response) => {
-        //console.log(response.data);
         const successLinks = {
-          link: url,
+          href: url,
+          text: linkText,
           status: response.status,
           statusText: response.statusText,
         };
-        //console.log(successLinks, "hola estoy aca");
         fetchingLinks.push(successLinks);
         return successLinks;
         //console.log(fetchingLinks.length, files.length);
@@ -48,7 +60,8 @@ const httpReq = (filename) => {
       .catch((error) => {
         if (error.response) {
           const failLinks = {
-            link: url,
+            href: url,
+            text: linkText,
             status: error.response.status,
             statusText: error.response.statusText,
           };
@@ -58,13 +71,13 @@ const httpReq = (filename) => {
       })
       .finally(() => {
         if (fetchingLinks.length === files.length) {
-          console.log(fetchingLinks);
-         }
+           console.log(fetchingLinks);
+        }
       });
-  });
+  }); 
 };
-httpReq("demo1.md");
- 
+validateStatus("demo1.md");  
+
 // Getting md files from a directory
 const readingDir = (__dirname) => {
   files = fs.readdirSync(__dirname);
@@ -74,4 +87,4 @@ const readingDir = (__dirname) => {
     if (path.extname(file) == ".md") console.log(file);
   });
 };
-readingDir("C:/Users/carolina.briones/Desktop/COPY-SCL020-memory-match"); 
+readingDir("C:/Users/carolina.briones/Desktop/COPY-SCL020-memory-match");
