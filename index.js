@@ -2,7 +2,6 @@
 //   // ...
 // };
 const fs = require("fs");
-//const { readFileSync } = require("fs");
 const marked = require("marked");
 const cheerio = require("cheerio");
 const path = require("path");
@@ -17,20 +16,20 @@ const extractLinks = (filename) => {
     const linksObjects = $("a"); // this is a mass object, not an array
     //console.log(linksObjects in extractLinks func);
 
-    const linksArr = [];
+    const linksObjArr = [];
     linksObjects.each((index, link) => {
-      linksArr.push({
+      linksObjArr.push({
         text: $(link).text(),
         href: $(link).attr("href"),
       });
     });
     // console.log(linksArr, "linksArr in extractLink func");
-    return linksArr;
+    return linksObjArr;
   } catch (err) {
     console.error(err);
   }
 };
-extractLinks("./demo/demo1.md");
+//extractLinks("./demo/demo1.md");
 
 // Http Request - Checking Link Status
 const validateStatus = (filename) => {
@@ -80,96 +79,46 @@ const validateStatus = (filename) => {
 
 
 // Getting all the files in directory - recursion - to be able to go through subdirectories
-const getAllMdFiles = (dirPath, filesArr) => {
+const getAllFiles = (dirPath, filesArr) => {
   const files = fs.readdirSync(dirPath);
-
+  
    filesArr = filesArr || [];
 
   files.forEach((file) => {
     // Going recursevely into each directory and subdirectory to add files into filesArr
     if (fs.statSync(dirPath + "/" + file).isDirectory()) {
-      filesArr = getAllMdFiles(dirPath + "/" + file, filesArr);
+      // If it is a directory, the function recursevely call itself to get all files and subdirectories
+      filesArr = getAllFiles(dirPath + "/" + file, filesArr);
     } else {
       filesArr.push(path.join(__dirname, dirPath, "/", file));
-      
     }
   });
-
-  const mdFilesArr = filesArr.filter((file) => {
-    return path.extname(file) === ".md";
-  });
-  //console.log(filesArr, "filesArr in getAllFiles func");
-  //console.log(mdFilesArr);
-  return mdFilesArr;
+  return filesArr;
 };
-const funt = getAllMdFiles("./demo");
-console.log(funt);
+const funt = getAllFiles("./demo");
+//console.log(funt, "estoy en getAllMdFiles func");
 
 
-// Checking if its directory or file
-const getFiles = (path) => {
-  const stats = fs.statSync(path);
 
-  if (stats.isFile()) {
-    console.log("is file ? " + stats.isFile());
-  } else if (stats.isDirectory()) {
-    console.log("is directory? " + stats.isDirectory());
-  }
-};
-// getFiles("./demo");
 
 
 const mdLinks = (dirPath) => {
   let filesArr = [];
-  getAllMdFiles(dirPath,filesArr);
+  getAllFiles(dirPath,filesArr);
 
   filesArr.forEach((file) => {
-    const allLinksArr = extractLinks(file);
-    console.log(allLinksArr);
+    const validatingStatus = validateStatus(file);
+      if (path.extname(file) === ".md") {
+        console.log(validatingStatus);
+      }
   })
-  console.log(filesArr);
+ // console.log(filesArr);
 }
 
-//mdLinks("./demo");
+mdLinks("./demo");
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-// Joining path segments
-const joinPath = (folderPath) => {
-  fs.readdirSync(folderPath).map((filename) => {
-    const fullPath = path.join(folderPath, filename);
-    console.log(fullPath, "fullPath in joinPath Func");
-    return fullPath;
-  });
-};
-// joinPath("./demo");
-
-// Getting md files from a directory
-const readDir = (__dirname) => {
-  try {
-    const files = fs.readdirSync(__dirname);
-    console.log("/Filenames with the .md extension:");
-
-    files.forEach((file) => {
-      if (path.extname(file) === ".md")
-        console.log(file, ".md files in readDir func");
-    });
-  } catch (err) {
-    console.error(err);
-  }
-};
-// readDir("./demo");
