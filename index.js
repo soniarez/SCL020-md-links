@@ -35,67 +35,63 @@ const extractLinks = (filename) => {
 // Http Request - Checking Link Status
 const validateStatus = (filename, options) => {
   const files = extractLinks(filename);
-  //console.log(files, "files in validateStatus func");
 
   const fetchingLinks = [];
+
   files.forEach((urlObj) => {
     const url = urlObj.href;
     const linkText = urlObj.text;
 
-    let baseObj = {
+    let baseDataLink = {
       href: url,
       text: linkText,
       file: filename,
     }
 
+    // http request with axios
     axios
       .get(url)
       .then((response) => {
-         
-        //console.log(response);
         if (process.argv[2] === "--validate") {
-          const dataLinks = {
-            href: url,
-            text: linkText,
-            file: filename,
-            status: response.status,
-            statusText: response.statusText,
-          };
-          fetchingLinks.push(dataLinks);
+          baseDataLink.status =  response.status,
+          baseDataLink.statusText = response.statusText
+          fetchingLinks.push(baseDataLink);
           //console.log(fetchingLinks.length, files.length);
-        } else if (process.argv[2] === "--stats") {
-          const dataLinks = {
-            total: "falta que me hagas",
-            unique: "falta que me hagas"
-          };
-          fetchingLinks.push(dataLinks);
-        } else {
-          const dataLinks = {
-            href: url,
-            text: linkText,
-            file: filename,
-          };
-          fetchingLinks.push(dataLinks);
+        }  else {
+          fetchingLinks.push(baseDataLink);
         } 
-        return dataLinks;
+        return baseDataLink;
       })
       .catch((error) => {
         if (error.response) {
           if (process.argv[2] === "--validate") {
-            baseObj.status = error.response.status
-            baseObj.text = error.response.statusText
+            baseDataLink.status = error.response.status
+            baseDataLink.statusText = error.response.statusText
           };
-          fetchingLinks.push(baseObj);
-          return fetchingLinks;
+          fetchingLinks.push(baseDataLink);
+          return baseDataLink;
         };
       })
       .finally(() => {
        //console.log(fetchingLinks.length, files.length);
-       //console.log(fetchingLinks);
         if (fetchingLinks.length === files.length) {
-         console.log(fetchingLinks);
-          return fetchingLinks;
+          // Checking for unique links
+        const uniqueArr = fetchingLinks.filter((value, index, self) => {
+          return self.findIndex(v => v.href === value.href) === index;
+        })
+        //console.log(uniqueArr, "soy uniqueArr"); 
+        console.log(fetchingLinks); 
+        
+         if (process.argv[2] === "--stats") {
+          const stats  = {
+            total: fetchingLinks.length,
+            unique: uniqueArr.length
+          }
+          console.log(stats);
+          return stats;
+         }
         }
+        return fetchingLinks;
       });
   });
 };
@@ -123,6 +119,7 @@ const getAllFiles = (dirPath, filesArr) => {
 //const funt = getAllFiles("./demo");
 //console.log(funt, "estoy en getAllMdFiles func");
 
+//MS LINKS
 const mdLinks = (dirPath, options) => {
   let filesArr = [];
   getAllFiles(dirPath, filesArr);

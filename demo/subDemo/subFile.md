@@ -5,4 +5,5 @@
   * [Document.createElement() - MDN](https://developer.mozilla.org/es/docs/Web/API/Document/createElement)
   * [Document.createTextNode()](https://developer.mozilla.org/es/docs/Web/API/Document/createTextNode)
   * [Element.innerHTML - MDN](https://developer.mozilla.org/es/docs/Web/API/Element/innerHTML)
+  * [Element.innerHTML - MDN](https://developer.mozilla.org/es/docs/Web/API/Element/innerHTML)
   * [Node.textContent - MDN](https://developer.mozilla.org/es/docs/Web/API/Node/textContentx)
