@@ -41,9 +41,17 @@ const validateStatus = (filename, options) => {
   files.forEach((urlObj) => {
     const url = urlObj.href;
     const linkText = urlObj.text;
+
+    let baseObj = {
+      href: url,
+      text: linkText,
+      file: filename,
+    }
+
     axios
       .get(url)
       .then((response) => {
+         
         //console.log(response);
         if (process.argv[2] === "--validate") {
           const dataLinks = {
@@ -62,26 +70,30 @@ const validateStatus = (filename, options) => {
           };
           fetchingLinks.push(dataLinks);
         } else {
-          console.log("Im running here!");
           const dataLinks = {
             href: url,
             text: linkText,
             file: filename,
           };
           fetchingLinks.push(dataLinks);
-        }
+        } 
         return dataLinks;
       })
       .catch((error) => {
         if (error.response) {
-          console.log("failed http request");
-        }
+          if (process.argv[2] === "--validate") {
+            baseObj.status = error.response.status
+            baseObj.text = error.response.statusText
+          };
+          fetchingLinks.push(baseObj);
+          return fetchingLinks;
+        };
       })
       .finally(() => {
        //console.log(fetchingLinks.length, files.length);
-       console.log(fetchingLinks);
+       //console.log(fetchingLinks);
         if (fetchingLinks.length === files.length) {
-         // console.log(fetchingLinks);
+         console.log(fetchingLinks);
           return fetchingLinks;
         }
       });
