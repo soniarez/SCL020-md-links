@@ -15,5 +15,6 @@
 [Link4](https://www.w3schools.com/nodejs/nodejs_filesystem.asp)
 [Node.js](https://nodejs.org/es/)
 * [Array.prototype.filter() - MDN](https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Global_Objects/Array/filter)
+* [Arreglos](https://curriculum.laboratoria.la/es/topics/javascript/04-arrays)
 
-[Link7](http://www.w3schools.com/nodejs/nodejs_filesystem.aspx) 
+[Link8](http://www.w3schools.com/nodejs/nodejs_filesystem.aspx) 
