@@ -6,6 +6,7 @@ const marked = require("marked");
 const cheerio = require("cheerio");
 const path = require("path");
 const axios = require("axios").default;
+const process = require("process");
 
 // Extracting Links and text from link
 const extractLinks = (filename) => {
@@ -23,16 +24,16 @@ const extractLinks = (filename) => {
         href: $(link).attr("href"),
       });
     });
-    // console.log(linksArr, "linksArr in extractLink func");
+    //console.log(linksObjArr, "linksArr in extractLink func");
     return linksObjArr;
   } catch (err) {
     console.error(err);
   }
 };
-//extractLinks("./demo/demo1.md");
+//extractLinks("./demo/subDemo/subFile.md");
 
 // Http Request - Checking Link Status
-const validateStatus = (filename) => {
+const validateStatus = (filename, options) => {
   const files = extractLinks(filename);
   //console.log(files, "files in validateStatus func");
 
@@ -43,46 +44,58 @@ const validateStatus = (filename) => {
     axios
       .get(url)
       .then((response) => {
-        const successLinks = {
-          href: url,
-          text: linkText,
-          file: "path of file: I need resolve path first",
-          status: response.status,
-          statusText: response.statusText,
-        };
-        fetchingLinks.push(successLinks);
-        return successLinks;
-        //console.log(fetchingLinks.length, files.length);
+        //console.log(response);
+        if (process.argv[2] === "--validate") {
+          const dataLinks = {
+            href: url,
+            text: linkText,
+            file: filename,
+            status: response.status,
+            statusText: response.statusText,
+          };
+          fetchingLinks.push(dataLinks);
+          //console.log(fetchingLinks.length, files.length);
+        } else if (process.argv[2] === "--stats") {
+          const dataLinks = {
+            total: "falta que me hagas",
+            unique: "falta que me hagas"
+          };
+          fetchingLinks.push(dataLinks);
+        } else {
+          console.log("Im running here!");
+          const dataLinks = {
+            href: url,
+            text: linkText,
+            file: filename,
+          };
+          fetchingLinks.push(dataLinks);
+        }
+        return dataLinks;
       })
       .catch((error) => {
         if (error.response) {
-          const failLinks = {
-            href: url,
-            text: linkText,
-            file: "path of file. I need resolve path first",
-            status: error.response.status,
-            statusText: error.response.statusText,
-          };
-          fetchingLinks.push(failLinks);
-          return failLinks;
+          console.log("failed http request");
         }
       })
       .finally(() => {
+       //console.log(fetchingLinks.length, files.length);
+       console.log(fetchingLinks);
         if (fetchingLinks.length === files.length) {
-          console.log(fetchingLinks);
+         // console.log(fetchingLinks);
           return fetchingLinks;
         }
       });
   });
 };
-//validateStatus("./demo/demo1.md");
+validateStatus("./demo/subDemo/subFile.md");
+
 
 
 // Getting all the files in directory - recursion - to be able to go through subdirectories
 const getAllFiles = (dirPath, filesArr) => {
   const files = fs.readdirSync(dirPath);
-  
-   filesArr = filesArr || [];
+
+  filesArr = filesArr || [];
 
   files.forEach((file) => {
     // Going recursevely into each directory and subdirectory to add files into filesArr
@@ -95,30 +108,21 @@ const getAllFiles = (dirPath, filesArr) => {
   });
   return filesArr;
 };
-const funt = getAllFiles("./demo");
+//const funt = getAllFiles("./demo");
 //console.log(funt, "estoy en getAllMdFiles func");
 
-
-
-
-
-const mdLinks = (dirPath) => {
+const mdLinks = (dirPath, options) => {
   let filesArr = [];
-  getAllFiles(dirPath,filesArr);
+  getAllFiles(dirPath, filesArr);
 
   filesArr.forEach((file) => {
     const validatingStatus = validateStatus(file);
-      if (path.extname(file) === ".md") {
-        console.log(validatingStatus);
-      }
-  })
- // console.log(filesArr);
-}
-
-mdLinks("./demo");
-
-
-
-
+    if (path.extname(file) === ".md") {
+      console.log(validatingStatus);
+    }
+  });
+  //console.log(filesArr);
+};
+//mdLinks("./demo");
 
 
