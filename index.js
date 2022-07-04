@@ -32,6 +32,7 @@ const extractLinks = (filename) => {
 };
 //extractLinks("./demo/subDemo/subFile.md");
 
+
 // Http Request - Checking Link Status
 const validateStatus = (filename, options) => {
   const files = extractLinks(filename);
@@ -95,11 +96,10 @@ const validateStatus = (filename, options) => {
       });
   });
 };
-validateStatus("./demo/subDemo/subFile.md");
+//validateStatus("./demo/subDemo/subFile.md");
 
 
-
-// Getting all the files in directory - recursion - to be able to go through subdirectories
+// Getting all the files from directory - recursion - to be able to go through folders and subfolders
 const getAllFiles = (dirPath, filesArr) => {
   const files = fs.readdirSync(dirPath);
 
@@ -119,19 +119,9 @@ const getAllFiles = (dirPath, filesArr) => {
 //const funt = getAllFiles("./demo");
 //console.log(funt, "estoy en getAllMdFiles func");
 
-//MS LINKS
-const mdLinks = (dirPath, options) => {
-  let filesArr = [];
-  getAllFiles(dirPath, filesArr);
 
-  filesArr.forEach((file) => {
-    const validatingStatus = validateStatus(file);
-    if (path.extname(file) === ".md") {
-      console.log(validatingStatus);
-    }
-  });
-  //console.log(filesArr);
-};
-//mdLinks("./demo");
-
-
+module.exports = {
+  extractLinks,
+  validateStatus,
+  getAllFiles
+}
