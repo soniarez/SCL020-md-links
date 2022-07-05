@@ -3,6 +3,7 @@ const marked = require("marked");
 const cheerio = require("cheerio");
 const path = require("path");
 const axios = require("axios").default;
+const process = require("process");
 
 // Extracting Links and text from link
 const extractLinks = (filename) => {
@@ -29,7 +30,7 @@ const extractLinks = (filename) => {
 //extractLinks("./demo/subDemo/subFile.md");
 
 // Http Request - Checking Link Status
-const validateStatus = (filename) => {
+const validateStatus = (filename, options) => {
   const files = extractLinks(filename);
 
   const fetchingLinks = [];
@@ -38,34 +39,36 @@ const validateStatus = (filename) => {
     const url = urlObj.href;
     const linkText = urlObj.text;
 
+    //Object containing basic infor ir user noes not use options
+    let baseDataLink = {
+      href: url,
+      text: linkText,
+      file: filename,
+    };
+
     // http request with axios
     const linkAx = axios
       .get(url)
       .then((response) => {
-        const dataLink = {
-          href: url,
-          text: linkText,
-          file: filename,
-          status: response.status,
-          statusText: response.statusText
-        };
-        return dataLink;
+        if (process.argv[2] === "--validate") {
+          (baseDataLink.status = response.status),
+            (baseDataLink.statusText = response.statusText);
+          return baseDataLink;
+        } else {
+          return baseDataLink;
+        }
       })
       .catch((error) => {
         if (error.response) {
-          const dataLink = {
-            href: url,
-            text: linkText,
-            file: filename,
-            status: error.response.status,
-            statusText: error.response.statusText
-          };
-          return dataLink;
+          if (process.argv[2] === "--validate") {
+            (baseDataLink.status = error.response.status),
+              (baseDataLink.statusText = error.response.statusText);
+          }
+          return baseDataLink;
         }
       });
-      fetchingLinks.push(linkAx);
+    fetchingLinks.push(linkAx);
   });
   return Promise.all(fetchingLinks);
 };
 validateStatus("./demo/demo1.md").then(console.log);
-
