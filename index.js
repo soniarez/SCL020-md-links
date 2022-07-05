@@ -1,12 +1,14 @@
-/* const path = require("path");
+const path = require("path");
 const fs = require("fs");
 const { validateStatus, getAllFiles } = require("./mdlinks.js");
 
-const mdLinks = (userFilePath) => {
-  
+const mdLinks = (userFilePath, options) => {
+  console.log("hola1")
+
   if (fs.statSync(userFilePath).isDirectory()) {
-    
+    console.log("hola2")
     let filesArr = []; //Im getting all files from GetAllFiles (not just .md)
+    console.log("hola3")
     getAllFiles(userFilePath, filesArr);
     filesArr.forEach((file) => {
       const validatingStatus = validateStatus(file);
@@ -21,4 +23,4 @@ const mdLinks = (userFilePath) => {
     return isFile;
   }
 }; 
-mdLinks("./demo/demo1.md"); */
+mdLinks("./demo/demo1.md").then(console.log);

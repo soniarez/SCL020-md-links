@@ -67,8 +67,33 @@ const validateStatus = (filename, options) => {
           return baseDataLink;
         }
       });
-    fetchingLinks.push(linkAx);
+      fetchingLinks.push(linkAx);
   });
-  return Promise.all(fetchingLinks);
+ return Promise.all(fetchingLinks);
 };
-validateStatus("./demo/demo1.md").then(console.log);
+//validateStatus("./demo/demo1.md").then(console.log);
+
+// Getting all the files from directory - recursion - to be able to go through folders and subfolders
+const getAllFiles = (dirPath, filesArr) => {
+  const files = fs.readdirSync(dirPath, "utf8");
+
+  filesArr = filesArr || [];
+
+  files.forEach((file) => {
+    // Going recursevely into each directory and subdirectory to add files into filesArr
+    if (fs.statSync(dirPath + "/" + file).isDirectory()) {
+      // If it is a directory, the function recursevely call itself to get all files and subdirectories
+      filesArr = getAllFiles(dirPath + "/" + file, filesArr);
+    } else {
+      filesArr.push(path.join(__dirname, dirPath, "/", file));
+    }
+  });
+  return filesArr;
+};
+//const funt = getAllFiles("./demo");
+//console.log(funt, "estoy en getAllMdFiles func");
+
+module.exports = {
+  validateStatus,
+  getAllFiles
+}
