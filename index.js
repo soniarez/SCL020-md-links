@@ -1,6 +1,3 @@
-// module.exports = () => {
-//   // ...
-// };
 const fs = require("fs");
 const marked = require("marked");
 const cheerio = require("cheerio");
@@ -43,6 +40,7 @@ const validateStatus = (filename, options) => {
     const url = urlObj.href;
     const linkText = urlObj.text;
 
+    // Object containining basic info if user does not use options
     let baseDataLink = {
       href: url,
       text: linkText,
@@ -76,7 +74,7 @@ const validateStatus = (filename, options) => {
       .finally(() => {
        //console.log(fetchingLinks.length, files.length);
         if (fetchingLinks.length === files.length) {
-          // Checking for unique links
+          // Checking for unique links  --> PREGUNTAR MAURO ESTO
         const uniqueArr = fetchingLinks.filter((value, index, self) => {
           return self.findIndex(v => v.href === value.href) === index;
         })
