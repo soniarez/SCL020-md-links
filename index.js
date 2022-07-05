@@ -36,7 +36,7 @@ const validateStatus = (filename, options) => {
 
   const fetchingLinks = [];
 
-  files.forEach((urlObj) => {
+  files.map((urlObj) => {
     const url = urlObj.href;
     const linkText = urlObj.text;
 
