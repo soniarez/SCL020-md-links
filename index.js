@@ -1,6 +1,3 @@
-// module.exports = () => {
-//   // ...
-// };
 const fs = require("fs");
 const marked = require("marked");
 const cheerio = require("cheerio");
@@ -32,16 +29,18 @@ const extractLinks = (filename) => {
 };
 //extractLinks("./demo/subDemo/subFile.md");
 
+
 // Http Request - Checking Link Status
 const validateStatus = (filename, options) => {
   const files = extractLinks(filename);
 
   const fetchingLinks = [];
 
-  files.forEach((urlObj) => {
+  files.map((urlObj) => {
     const url = urlObj.href;
     const linkText = urlObj.text;
 
+    // Object containining basic info if user does not use options
     let baseDataLink = {
       href: url,
       text: linkText,
@@ -75,7 +74,7 @@ const validateStatus = (filename, options) => {
       .finally(() => {
        //console.log(fetchingLinks.length, files.length);
         if (fetchingLinks.length === files.length) {
-          // Checking for unique links
+          // Checking for unique links  --> PREGUNTAR MAURO ESTO
         const uniqueArr = fetchingLinks.filter((value, index, self) => {
           return self.findIndex(v => v.href === value.href) === index;
         })
@@ -95,11 +94,10 @@ const validateStatus = (filename, options) => {
       });
   });
 };
-validateStatus("./demo/subDemo/subFile.md");
+//validateStatus("./demo/subDemo/subFile.md");
 
 
-
-// Getting all the files in directory - recursion - to be able to go through subdirectories
+// Getting all the files from directory - recursion - to be able to go through folders and subfolders
 const getAllFiles = (dirPath, filesArr) => {
   const files = fs.readdirSync(dirPath);
 
@@ -119,19 +117,9 @@ const getAllFiles = (dirPath, filesArr) => {
 //const funt = getAllFiles("./demo");
 //console.log(funt, "estoy en getAllMdFiles func");
 
-//MS LINKS
-const mdLinks = (dirPath, options) => {
-  let filesArr = [];
-  getAllFiles(dirPath, filesArr);
 
-  filesArr.forEach((file) => {
-    const validatingStatus = validateStatus(file);
-    if (path.extname(file) === ".md") {
-      console.log(validatingStatus);
-    }
-  });
-  //console.log(filesArr);
-};
-//mdLinks("./demo");
-
-
+module.exports = {
+  extractLinks,
+  validateStatus,
+  getAllFiles
+}
