@@ -1,28 +1,50 @@
 const path = require("path");
 const fs = require("fs");
-const { validateStatus, getAllFiles } = require("./mdlinks.js");
+const { validateStatus, getAllFiles, extractLinks } = require("./mdlinks.js");
 
 const mdLinks = (userFilePath, options) => {
-
-
   if (fs.statSync(userFilePath).isDirectory()) {
-  
-    let filesArr = []; 
     
-    const allFilesArr = getAllFiles(userFilePath, filesArr);
+    let filesArr = [];
+
+    const allFilesArr = getAllFiles(userFilePath);
     allFilesArr.forEach((file) => {
       if (path.extname(file) === ".md") {
-        const validatingStatus = validateStatus(file);
-        filesArr.push(validatingStatus);
+        if (options === "--validate") {
+          const validatingStatus = validateStatus(file);
+          filesArr.push(validatingStatus);
+        } else {
+          const readingAllFiles = extractLinks(file);
+          filesArr.push(readingAllFiles);
+        }
       }
     });
 
     return Promise.all(filesArr);
 
   } else {
-    const isFile = validateStatus(userFilePath);
-    return isFile;
-  }
-}; 
-mdLinks("./demo").then(console.log)
+    if (options === "--validate") {
+      return validateStatus(userFilePath);
+    } else {
+      const readingOneFile = new Promise ((resolve) => {
+        resolve(extractLinks(userFilePath));
+      })
 
+      return readingOneFile;
+    }
+  }
+};
+//mdLinks("./demo/demo1.md").then(console.log)
+
+module.exports = {
+  mdLinks,
+};
+
+/* mdLinks("ruta").then()
+
+let stats = false
+if(proces…… === --stats)  {
+stats = true
+}
+
+mdLInks(ruta, stats) */

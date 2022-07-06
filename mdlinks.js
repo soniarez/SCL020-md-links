@@ -3,7 +3,7 @@ const marked = require("marked");
 const cheerio = require("cheerio");
 const path = require("path");
 const axios = require("axios").default;
-const process = require("process");
+//const process = require("process");
 
 // Extracting Links and text from link
 const extractLinks = (filename) => {
@@ -18,6 +18,7 @@ const extractLinks = (filename) => {
       linksObjArr.push({
         text: $(link).text(),
         href: $(link).attr("href"),
+        file: filename
       });
     });
 
@@ -37,34 +38,39 @@ const validateStatus = (filename) => {
   files.map((urlObj) => {
     const url = urlObj.href;
     const linkText = urlObj.text;
+    const file = urlObj.file;
 
-    let baseDataLink = {
+    /*     let baseDataLink = {
       href: url,
       text: linkText,
       file: filename,
-    };
+    }; */
 
     const linkAx = axios
       .get(url)
       .then((response) => {
-        if (process.argv[2] === "--validate") {
-          (baseDataLink.status = response.status),
-            (baseDataLink.statusText = response.statusText);
-          return baseDataLink;
-        } else {
-          return baseDataLink;
-        }
+        const dataLink = {
+          href: url,
+          tex: linkText,
+          filePath: file,
+          status: response.status,
+          statusText: response.statusText,
+        };
+        return dataLink;
       })
       .catch((error) => {
         if (error.response) {
-          if (process.argv[2] === "--validate") {
-            (baseDataLink.status = error.response.status),
-              (baseDataLink.statusText = error.response.statusText);
-          }
-          return baseDataLink;
+          const dataLink = {
+            href: url,
+            tex: linkText,
+            filePath: file,
+            status: error.response.status,
+            statusText: error.response.statusText,
+          };
+          return dataLink;
         }
-      })
-     
+      });
+
     fetchingLinks.push(linkAx);
   });
   return Promise.all(fetchingLinks);
@@ -90,6 +96,7 @@ const getAllFiles = (dirPath, filesArr) => {
 console.log(funt, "estoy en getAllMdFiles func");  */
 
 module.exports = {
+  extractLinks,
   validateStatus,
   getAllFiles,
 };
