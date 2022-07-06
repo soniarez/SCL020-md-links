@@ -9,10 +9,9 @@ const process = require("process");
 const extractLinks = (filename) => {
   try {
     const data = fs.readFileSync(filename, "utf8");
-    const dataHtml = marked.parse(data); // using marked to transform md to html
-    const $ = cheerio.load(dataHtml); // using cheerio to extract <a> tags
-    const linksObjects = $("a"); // this is a mass object, not an array
-    //console.log(linksObjects in extractLinks func);
+    const dataHtml = marked.parse(data);
+    const $ = cheerio.load(dataHtml);
+    const linksObjects = $("a");
 
     const linksObjArr = [];
     linksObjects.each((index, link) => {
@@ -30,7 +29,7 @@ const extractLinks = (filename) => {
 //extractLinks("./demo/subDemo/subFile.md");
 
 // Http Request - Checking Link Status
-const validateStatus = (filename, options) => {
+const validateStatus = (filename) => {
   const files = extractLinks(filename);
 
   const fetchingLinks = [];
@@ -39,14 +38,12 @@ const validateStatus = (filename, options) => {
     const url = urlObj.href;
     const linkText = urlObj.text;
 
-    //Object containing basic infor ir user noes not use options
     let baseDataLink = {
       href: url,
       text: linkText,
       file: filename,
     };
 
-    // http request with axios
     const linkAx = axios
       .get(url)
       .then((response) => {
@@ -66,10 +63,11 @@ const validateStatus = (filename, options) => {
           }
           return baseDataLink;
         }
-      });
-      fetchingLinks.push(linkAx);
+      })
+     
+    fetchingLinks.push(linkAx);
   });
- return Promise.all(fetchingLinks);
+  return Promise.all(fetchingLinks);
 };
 //validateStatus("./demo/demo1.md").then(console.log);
 
@@ -80,9 +78,7 @@ const getAllFiles = (dirPath, filesArr) => {
   filesArr = filesArr || [];
 
   files.forEach((file) => {
-    // Going recursevely into each directory and subdirectory to add files into filesArr
     if (fs.statSync(dirPath + "/" + file).isDirectory()) {
-      // If it is a directory, the function recursevely call itself to get all files and subdirectories
       filesArr = getAllFiles(dirPath + "/" + file, filesArr);
     } else {
       filesArr.push(path.join(__dirname, dirPath, "/", file));
@@ -90,10 +86,10 @@ const getAllFiles = (dirPath, filesArr) => {
   });
   return filesArr;
 };
-//const funt = getAllFiles("./demo");
-//console.log(funt, "estoy en getAllMdFiles func");
+/* const funt = getAllFiles("./demo");
+console.log(funt, "estoy en getAllMdFiles func");  */
 
 module.exports = {
   validateStatus,
-  getAllFiles
-}
+  getAllFiles,
+};
