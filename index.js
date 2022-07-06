@@ -1,21 +1,21 @@
 const path = require("path");
 const fs = require("fs");
-const { validateStatus, getAllFiles } = require("./mdlinks.js");
-const { cliArg } = require("./cli.js");
+const { validateStatus, getAllFiles, extractLinks } = require("./mdlinks.js");
 
 const mdLinks = (userFilePath, options) => {
-
-
   if (fs.statSync(userFilePath).isDirectory()) {
-  
-    let filesArr = []; 
     
-    const allFilesArr = getAllFiles(userFilePath, filesArr);
+    let filesArr = [];
+
+    const allFilesArr = getAllFiles(userFilePath);
     allFilesArr.forEach((file) => {
       if (path.extname(file) === ".md") {
-        if (validate) {
+        if (options === "--validate") {
           const validatingStatus = validateStatus(file);
           filesArr.push(validatingStatus);
+        } else {
+          const readingAllFiles = extractLinks(file);
+          filesArr.push(readingAllFiles);
         }
       }
     });
@@ -23,14 +23,28 @@ const mdLinks = (userFilePath, options) => {
     return Promise.all(filesArr);
 
   } else {
-    const isFile = validateStatus(userFilePath);
-    return isFile;
+    if (options === "--validate") {
+      return validateStatus(userFilePath);
+    } else {
+      const readingOneFile = new Promise ((resolve) => {
+        resolve(extractLinks(userFilePath));
+      })
+
+      return readingOneFile;
+    }
   }
-}; 
-//mdLinks("./demo").then(console.log)
+};
+//mdLinks("./demo/demo1.md").then(console.log)
 
 module.exports = {
-  mdLinks
+  mdLinks,
 };
 
-/* mdLinks("ruta").then() MAURO*/
+/* mdLinks("ruta").then()
+
+let stats = false
+if(proces…… === --stats)  {
+stats = true
+}
+
+mdLInks(ruta, stats) */
