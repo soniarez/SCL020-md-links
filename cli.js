@@ -4,13 +4,17 @@ const { mdLinks } = require("./index.js");
 
 const cliArg = () => {
   let path = process.argv[2];
-  let options = process.argv[3];
-  let validate = false;
-  let stats = false;
 
-  if (options === "--validate") {
-    validate = true;
-  } 
+  let options = {
+    validate: false,
+    stats: false
+  }
+ 
+  if (process.argv[3] === "--validate") {
+    options.validate = true;
+  } else if(process.argv[3] === "--stats") {
+    options.stats = true;
+  }
 
   mdLinks(path, options).then((result) => console.log(result));
 };

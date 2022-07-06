@@ -10,7 +10,7 @@ const mdLinks = (userFilePath, options) => {
     const allFilesArr = getAllFiles(userFilePath);
     allFilesArr.forEach((file) => {
       if (path.extname(file) === ".md") {
-        if (options === "--validate") {
+        if (options.validate) {
           const validatingStatus = validateStatus(file);
           filesArr.push(validatingStatus);
         } else {
@@ -23,7 +23,7 @@ const mdLinks = (userFilePath, options) => {
     return Promise.all(filesArr);
 
   } else {
-    if (options === "--validate") {
+    if (options.validate) {
       return validateStatus(userFilePath);
     } else {
       const readingOneFile = new Promise ((resolve) => {
