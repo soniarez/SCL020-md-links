@@ -1,6 +1,7 @@
 const path = require("path");
 const fs = require("fs");
 const { validateStatus, getAllFiles } = require("./mdlinks.js");
+const { cliArg } = require("./cli.js");
 
 const mdLinks = (userFilePath, options) => {
 
@@ -12,8 +13,10 @@ const mdLinks = (userFilePath, options) => {
     const allFilesArr = getAllFiles(userFilePath, filesArr);
     allFilesArr.forEach((file) => {
       if (path.extname(file) === ".md") {
-        const validatingStatus = validateStatus(file);
-        filesArr.push(validatingStatus);
+        if (validate) {
+          const validatingStatus = validateStatus(file);
+          filesArr.push(validatingStatus);
+        }
       }
     });
 
@@ -24,5 +27,10 @@ const mdLinks = (userFilePath, options) => {
     return isFile;
   }
 }; 
-mdLinks("./demo").then(console.log)
+//mdLinks("./demo").then(console.log)
 
+module.exports = {
+  mdLinks
+};
+
+/* mdLinks("ruta").then() MAURO*/

@@ -10,5 +10,6 @@
     "file-system": "^2.2.2",
     "markdown-link-extractor": "^4.0.1",
     "marked": "^4.0.17"
-  }
+  },
+  "bin": "./cli.js"
 }
