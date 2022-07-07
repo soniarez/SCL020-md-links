@@ -4,7 +4,6 @@ const { validateStatus, getAllFiles, extractLinks } = require("./mdlinks.js");
 
 const mdLinks = (userFilePath, options) => {
   if (fs.statSync(userFilePath).isDirectory()) {
-    
     let filesArr = [];
 
     const allFilesArr = getAllFiles(userFilePath);
@@ -21,16 +20,13 @@ const mdLinks = (userFilePath, options) => {
     });
 
     return Promise.all(filesArr);
-
   } else {
     if (options.validate) {
       return validateStatus(userFilePath);
     } else {
-      const readingOneFile = new Promise ((resolve) => {
+      return new Promise((resolve) => {
         resolve(extractLinks(userFilePath));
-      })
-
-      return readingOneFile;
+      });
     }
   }
 };
