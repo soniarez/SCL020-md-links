@@ -1,13 +1,14 @@
 const path = require("path");
 const fs = require("fs");
 const {
+  extractLinks,
   validateStatus,
   statsLink,
-  getAllFiles,
-  extractLinks,
+  getAllFiles
 } = require("./mdlinks.js");
 
 const mdLinks = (userFilePath, options) => {
+  //Behaviour when working with a directory
   if (fs.statSync(userFilePath).isDirectory()) {
     let filesArr = [];
 
@@ -28,7 +29,8 @@ const mdLinks = (userFilePath, options) => {
     });
 
     return Promise.all(filesArr);
-  } else {
+    //Behaviour when working with a file
+  } else { 
     if (options.validate) {
       return validateStatus(userFilePath);
     } else if (options.stats) {
@@ -45,14 +47,5 @@ const mdLinks = (userFilePath, options) => {
 //mdLinks("./demo/demo1.md").then(console.log)
 
 module.exports = {
-  mdLinks,
+  mdLinks
 };
-
-/* mdLinks("ruta").then()
-
-let stats = false
-if(proces…… === --stats)  {
-stats = true
-}
-
-mdLInks(ruta, stats) */
