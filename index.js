@@ -7,7 +7,7 @@ const mdLinks = (userFilePath, options) => {
     let filesArr = [];
 
     const allFilesArr = getAllFiles(userFilePath);
-    allFilesArr.forEach((file) => {
+    allFilesArr.map((file) => {
       if (path.extname(file) === ".md") {
         if (options.validate) {
           const validatingStatus = validateStatus(file);
