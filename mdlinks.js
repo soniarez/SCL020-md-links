@@ -35,12 +35,6 @@ const validateStatus = (filename) => {
     const linkText = urlObj.text;
     const file = urlObj.file;
 
-    /*     let baseDataLink = {
-      href: url,
-      text: linkText,
-      file: filename,
-    }; */
-
     const linkAx = axios
       .get(url)
       .then((response) => {
@@ -72,6 +66,22 @@ const validateStatus = (filename) => {
 };
 //validateStatus("./demo/demo1.md").then(console.log);
 
+//Stats - getting number of total and unique links
+const statsLink = (filename) => {
+  const files = extractLinks(filename);
+  //Filtering to get unique links
+  const uniqueArr = files.filter((link, index, self) => {
+    return self.findIndex((l) => l.href === link.href) === index;
+  });
+  //Stats object
+  const stats = {
+    total: files.length,
+    unique: uniqueArr.length,
+  };
+  return stats;
+};
+//console.log(statsLink("./demo/subDemo/subFile.md"));
+
 // Getting all the files from directory - recursion - to be able to go through folders and subfolders
 const getAllFiles = (dirPath, filesArr) => {
   const files = fs.readdirSync(dirPath, "utf8");
@@ -91,5 +101,6 @@ const getAllFiles = (dirPath, filesArr) => {
 module.exports = {
   extractLinks,
   validateStatus,
+  statsLink,
   getAllFiles,
 };
