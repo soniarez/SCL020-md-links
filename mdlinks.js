@@ -3,29 +3,24 @@ const marked = require("marked");
 const cheerio = require("cheerio");
 const path = require("path");
 const axios = require("axios").default;
-//const process = require("process");
 
 // Extracting Links and text from link
 const extractLinks = (filename) => {
-  try {
-    const data = fs.readFileSync(filename, "utf8");
-    const dataHtml = marked.parse(data);
-    const $ = cheerio.load(dataHtml);
-    const linksObjects = $("a");
+  const data = fs.readFileSync(filename, "utf8");
+  const dataHtml = marked.parse(data);
+  const $ = cheerio.load(dataHtml);
+  const linksObjects = $("a");
 
-    const linksObjArr = [];
-    linksObjects.each((index, link) => {
-      linksObjArr.push({
-        text: $(link).text(),
-        href: $(link).attr("href"),
-        file: filename
-      });
+  const linksObjArr = [];
+  linksObjects.each((index, link) => {
+    linksObjArr.push({
+      href: $(link).attr("href"),
+      text: $(link).text(),
+      file: filename,
     });
+  });
 
-    return linksObjArr;
-  } catch (err) {
-    console.error(err);
-  }
+  return linksObjArr;
 };
 //extractLinks("./demo/subDemo/subFile.md");
 
@@ -49,25 +44,25 @@ const validateStatus = (filename) => {
     const linkAx = axios
       .get(url)
       .then((response) => {
-        const dataLink = {
+        const linkInfo = {
           href: url,
-          tex: linkText,
-          filePath: file,
+          text: linkText,
+          file: file,
           status: response.status,
           statusText: response.statusText,
         };
-        return dataLink;
+        return linkInfo;
       })
       .catch((error) => {
         if (error.response) {
-          const dataLink = {
+          const linkInfo = {
             href: url,
-            tex: linkText,
-            filePath: file,
+            text: linkText,
+            file: file,
             status: error.response.status,
             statusText: error.response.statusText,
           };
-          return dataLink;
+          return linkInfo;
         }
       });
 
@@ -84,7 +79,7 @@ const getAllFiles = (dirPath, filesArr) => {
   filesArr = filesArr || [];
 
   files.forEach((file) => {
-    if (fs.statSync(dirPath + "/" + file).isDirectory()) {
+    if (fs.statSync(`${dirPath}/${file}`).isDirectory()) {
       filesArr = getAllFiles(dirPath + "/" + file, filesArr);
     } else {
       filesArr.push(path.join(__dirname, dirPath, "/", file));
@@ -92,8 +87,6 @@ const getAllFiles = (dirPath, filesArr) => {
   });
   return filesArr;
 };
-/* const funt = getAllFiles("./demo");
-console.log(funt, "estoy en getAllMdFiles func");  */
 
 module.exports = {
   extractLinks,
