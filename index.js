@@ -1,15 +1,18 @@
 const path = require("path");
 const fs = require("fs");
+const chalk = require('chalk');
 const {
   extractLinks,
   validateStatus,
   statsLink,
   getAllFiles
 } = require("./mdlinks.js");
+const log = console.log;
 
 const mdLinks = (userFilePath, options) => {
   //Behaviour when working with a directory
   if (fs.statSync(userFilePath).isDirectory()) {
+    log(chalk.cyan("Check the results from your directory:"));
     let filesArr = [];
 
     const allFilesArr = getAllFiles(userFilePath);
@@ -31,6 +34,7 @@ const mdLinks = (userFilePath, options) => {
     return Promise.all(filesArr);
     //Behaviour when working with a file
   } else { 
+    log(chalk.cyan("Check the results from your file:"));
     if (options.validate) {
       return validateStatus(userFilePath);
     } else if (options.stats) {

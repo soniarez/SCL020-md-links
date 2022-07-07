@@ -38,6 +38,7 @@ const validateStatus = (filename) => {
     const linkAx = axios
       .get(url)
       .then((response) => {
+
         const linkInfo = {
           href: url,
           text: linkText,
