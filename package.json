@@ -11,5 +11,8 @@
     "markdown-link-extractor": "^4.0.1",
     "marked": "^4.0.17"
   },
-   "bin": "./cli.js"
+  "bin": "./cli.js",
+  "devDependencies": {
+    "eslint": "^8.19.0"
+  }
 }
