@@ -9,9 +9,9 @@ const extractLinks = (filename) => {
   const data = fs.readFileSync(filename, "utf8");
   const dataHtml = marked.parse(data); //using marked to transform md to html
   const $ = cheerio.load(dataHtml); //using cheerio to traverse the file to extract <a> tags
-  const linksObjects = $("a"); //this is a mass object, not an array 
+  const linksObjects = $("a"); //this is a mass object, not an array
 
-  const linksObjArr = []; 
+  const linksObjArr = [];
   linksObjects.each((index, link) => {
     linksObjArr.push({
       href: $(link).attr("href"),
@@ -82,10 +82,10 @@ const statsLink = (filename) => {
 };
 //console.log(statsLink("./demo/subDemo/subFile.md"));
 
-// GETTING ALL FILES FROM A DIRECTORY - RECURSION - TO BE ABLE TO GO THROUGH FOLDERS AND SUBFOLDERS 
+// GETTING ALL FILES FROM A DIRECTORY - RECURSION - TO BE ABLE TO GO THROUGH FOLDERS AND SUBFOLDERS
 const getAllFiles = (dirPath, filesArr) => {
   const files = fs.readdirSync(dirPath, "utf8");
-  
+
   filesArr = filesArr || [];
 
   files.forEach((file) => {
@@ -104,5 +104,5 @@ module.exports = {
   extractLinks,
   validateStatus,
   statsLink,
-  getAllFiles
+  getAllFiles,
 };
