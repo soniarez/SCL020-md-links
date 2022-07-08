@@ -1,5 +1,5 @@
 {
-  "name": "@soniarez/md-links",
+  "name": "md-links",
   "version": "0.1.0",
   "engines": {
     "node": ">=14.x"
@@ -13,16 +13,6 @@
     "file-system": "^2.2.2",
     "marked": "^4.0.17",
     "ora": "^5.4.1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/soniarez/SCL020-md-links.git"
-  },
-  "keywords": [],
-  "author": "Sonia Reyes",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/soniarez/SCL020-md-links/issues"
   },
   "bin": "./cli.js",
   "devDependencies": {

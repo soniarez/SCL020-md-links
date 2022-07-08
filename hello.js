@@ -9,7 +9,7 @@ const hello = () => {
     chalk.yellow(figlet.textSync("md-Links", { horizontalLayout: "full" }))
   );
  
-};
+}
 
 module.exports = {
   hello,
