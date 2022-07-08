@@ -5,7 +5,7 @@ const { hello } = require("./hello.js");
 const ora = require("ora");
 
 const cliArg = () => {
-  hello();
+  hello(); 
 
   let path = process.argv[2]; //user input, file or directory path they want to check
 
