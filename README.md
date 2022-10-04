@@ -73,3 +73,6 @@ md-links [ruta del archivo a evaluar] --stats
 Total: 3
 Unique: 3
 ```
+
+## Demo
+![md-links-gif](https://user-images.githubusercontent.com/101676781/193935826-1e2ee368-91e5-4c96-b7e7-1fce5cc9328a.gif)
